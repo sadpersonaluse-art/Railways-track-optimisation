@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>RailAI - Platform Optimization</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .platform { border: 2px solid #333; margin: 10px; padding: 10px; border-radius: 5px; }
+        .conflict { background-color: #ffcccc; }
+        .optimized { background-color: #ccffcc; }
+        .train { background-color: #e6f3ff; margin: 5px; padding: 5px; border-radius: 3px; }
+    </style>
+</head>
+<body>
+    <h1>🚆 RailAI - Platform Optimization Dashboard</h1>
+    <div id="before">
+        <h2>Before Optimization</h2>
+        <div id="platforms-before"></div>
+    </div>
+    <div id="after">
+        <h2>After AI Optimization</h2>
+        <div id="platforms-after"></div>
+    </div>
+    
+    <script>
+        // This would load data from optimization_results.json
+        // For demo, showing static example
+        document.getElementById('platforms-before').innerHTML = `
+            <div class="platform conflict">
+                <h3>Platform 4 🚨</h3>
+                <div class="train">Amritsar Shatabdi (15:45)</div>
+                <div class="train">Dehradun Jan Shatabdi (16:40)</div>
+                <div class="train">Agra InterCity (16:05)</div>
+            </div>
+        `;
+        
+        document.getElementById('platforms-after').innerHTML = `
+            <div class="platform optimized">
+                <h3>Platform 4 ✅</h3>
+                <div class="train">Amritsar Shatabdi (15:45)</div>
+            </div>
+        `;
+    </script>
+</body>
+</html>

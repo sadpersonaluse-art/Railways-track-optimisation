@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RailAI - Platform Optimization Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .card h2 {
+            color: #333;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .metric {
+            text-align: center;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .metric .value {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .metric .label {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .platforms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .platform {
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            padding: 15px;
+            background: #f8f9fa;
+            transition: all 0.3s ease;
+        }
+
+        .platform.conflict {
+            border-color: #e74c3c;
+            background: #ffeaea;
+        }
+
+        .platform.optimized {
+            border-color: #27ae60;
+            background: #eaffea;
+        }
+
+        .platform h3 {
+            text-align: center;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .train {
+            background: white;
+            margin: 8px 0;
+            padding: 8px;
+            border-radius: 6px;
+            border-left: 4px solid #3498db;
+        }
+
+        .train.special {
+            border-left-color: #e74c3c;
+        }
+
+        .train-name {
+            font-weight: bold;
+            display: block;
+        }
+
+        .train-details {
+            font-size: 0.8em;
+            color: #666;
+        }
+
+        .controls {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 1.1em;
+            cursor: pointer;
+            margin: 0 10px;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            background: #5a6fd8;
+            transform: translateY(-2px);
+        }
+
+        .btn-optimize {
+            background: #27ae60;
+        }
+
+        .btn-optimize:hover {
+            background: #219955;
+        }
+
+        .status {
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚆 RailAI Platform Optimizer</h1>
+            <div class="subtitle">AI-Powered Railway Platform Allocation System</div>
+        </div>
+
+        <div class="dashboard">
+            <div class="card">
+                <h2>📊 Current Situation</h2>
+                <div id="currentMetrics" class="metrics">
+                    <!-- Metrics will be populated by JavaScript -->
+                </div>
+                <div id="currentPlatforms" class="platforms-grid">
+                    <!-- Platforms will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>🎯 AI Optimization</h2>
+                <div id="optimizedMetrics" class="metrics">
+                    <!-- Optimized metrics will be populated -->
+                </div>
+                <div id="optimizedPlatforms" class="platforms-grid">
+                    <!-- Optimized platforms will be populated -->
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>⚡ Controls</h2>
+            <div class="controls">
+                <button class="btn" onclick="loadScenario()">Load Scenario</button>
+                <button class="btn" onclick="loadRealScenario()">Load Real Data</button>
+                <button class="btn btn-optimize" onclick="runOptimization()">Run AI Optimization</button>
+                <button class="btn" onclick="resetView()">Reset View</button>
+            </div>
+            <div id="statusMessage"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8000';
+        let currentScenario = null;
+        let optimizationResults = null;
+
+        async function loadScenario() {
+            showStatus('Loading demo scenario...', 'info');
+            
+            try {
+                const response = await fetch(`${API_BASE}/scenario/demo`);
+                currentScenario = await response.json();
+                displayCurrentScenario(currentScenario);
+                showStatus('Scenario loaded successfully!', 'success');
+            } catch (error) {
+                showStatus('Error loading scenario: ' + error.message, 'error');
+            }
+        }
+
+        async function loadRealScenario() {
+            showStatus('Loading real railway data...', 'info');
+            
+            try {
+                const response = await fetch(`${API_BASE}/scenario/real`);
+                currentScenario = await response.json();
+                displayCurrentScenario(currentScenario);
+                
+                if (currentScenario.metadata.data_source === 'REAL_RAILWAY_DATA') {
+                    showStatus('Real railway data loaded successfully!', 'success');
+                } else {
+                    showStatus('Using demo data (real data not available)', 'info');
+                }
+            } catch (error) {
+                showStatus('Error loading real data: ' + error.message, 'error');
+            }
+        }
+        
+        async function runOptimization() {
+            if (!currentScenario) {
+                showStatus('Please load a scenario first!', 'error');
+                return;
+            }
+
+            showStatus('Running AI optimization...', 'info');
+            
+            try {
+                const response = await fetch(`${API_BASE}/optimize`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        trains: currentScenario.trains,
+                        platforms: currentScenario.platforms
+                    })
+                });
+                
+                optimizationResults = await response.json();
+                displayOptimizedResults(optimizationResults);
+                showStatus(`Optimization complete! Resolved ${optimizationResults.conflicts_resolved} conflicts`, 'success');
+            } catch (error) {
+                showStatus('Error during optimization: ' + error.message, 'error');
+            }
+        }
+
+        function displayCurrentScenario(scenario) {
+            // Display metrics
+            const currentMetrics = document.getElementById('currentMetrics');
+            currentMetrics.innerHTML = `
+                <div class="metric">
+                    <div class="value">${scenario.trains.length}</div>
+                    <div class="label">Trains</div>
+                </div>
+                <div class="metric">
+                    <div class="value">${scenario.platforms.length}</div>
+                    <div class="label">Platforms</div>
+                </div>
+                <div class="metric">
+                    <div class="value">${countConflicts(scenario.trains)}</div>
+                    <div class="label">Conflicts</div>
+                </div>
+            `;
+
+            // Display platforms
+            const currentPlatforms = document.getElementById('currentPlatforms');
+            currentPlatforms.innerHTML = scenario.platforms.map(platform => {
+                const platformTrains = scenario.trains.filter(train => train.assigned_platform === platform.platform_id);
+                const hasConflict = platformTrains.length > 1;
+                
+                return `
+                    <div class="platform ${hasConflict ? 'conflict' : ''}">
+                        <h3>Platform ${platform.platform_id}</h3>
+                        ${platformTrains.map(train => `
+                            <div class="train ${train.priority === 'High' ? 'special' : ''}">
+                                <span class="train-name">${train.train_name}</span>
+                                <div class="train-details">
+                                    ${train.current_eta} • ${train.passenger_load} passengers
+                                </div>
+                            </div>
+                        `).join('')}
+                        ${platformTrains.length === 0 ? '<div style="text-align: center; color: #999; padding: 10px;">No trains</div>' : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function displayOptimizedResults(results) {
+            // Display optimized metrics
+            const optimizedMetrics = document.getElementById('optimizedMetrics');
+            optimizedMetrics.innerHTML = `
+                <div class="metric">
+                    <div class="value">${results.conflicts_resolved}</div>
+                    <div class="label">Conflicts Resolved</div>
+                </div>
+                <div class="metric">
+                    <div class="value">${results.performance_metrics.delay_reduction}</div>
+                    <div class="label">Delay Reduction</div>
+                </div>
+                <div class="metric">
+                    <div class="value">${results.performance_metrics.turnaround_improvement}</div>
+                    <div class="label">Turnaround Improved</div>
+                </div>
+            `;
+
+            // Display optimized platforms
+            const optimizedPlatforms = document.getElementById('optimizedPlatforms');
+            const platforms = currentScenario.platforms;
+            
+            optimizedPlatforms.innerHTML = platforms.map(platform => {
+                const platformTrains = results.optimized_trains.filter(train => train.assigned_platform === platform.platform_id);
+                const isOptimized = platformTrains.length > 0 && platformTrains.some(train => {
+                    const originalTrain = currentScenario.trains.find(t => t.train_id === train.train_id);
+                    return originalTrain.assigned_platform !== train.assigned_platform;
+                });
+                
+                return `
+                    <div class="platform ${isOptimized ? 'optimized' : ''}">
+                        <h3>Platform ${platform.platform_id}</h3>
+                        ${platformTrains.map(train => {
+                            const originalTrain = currentScenario.trains.find(t => t.train_id === train.train_id);
+                            const wasMoved = originalTrain.assigned_platform !== train.assigned_platform;
+                            
+                            return `
+                                <div class="train ${train.priority === 'High' ? 'special' : ''}">
+                                    <span class="train-name">${train.train_name}</span>
+                                    <div class="train-details">
+                                        ${train.current_eta} • ${train.passenger_load}p
+                                        ${wasMoved ? '<br>🚀 MOVED' : ''}
+                                    </div>
+                                </div>
+                            `;
+                        }).join('')}
+                        ${platformTrains.length === 0 ? '<div style="text-align: center; color: #999; padding: 10px;">No trains</div>' : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function countConflicts(trains) {
+            const platformCounts = {};
+            trains.forEach(train => {
+                platformCounts[train.assigned_platform] = (platformCounts[train.assigned_platform] || 0) + 1;
+            });
+            
+            return Object.values(platformCounts).filter(count => count > 1).length;
+        }
+
+        function showStatus(message, type) {
+            const statusEl = document.getElementById('statusMessage');
+            statusEl.innerHTML = `<div class="status ${type}">${message}</div>`;
+            
+            // Auto-hide success messages after 3 seconds
+            if (type === 'success') {
+                setTimeout(() => {
+                    statusEl.innerHTML = '';
+                }, 3000);
+            }
+        }
+
+        function resetView() {
+            document.getElementById('currentMetrics').innerHTML = '';
+            document.getElementById('currentPlatforms').innerHTML = '';
+            document.getElementById('optimizedMetrics').innerHTML = '';
+            document.getElementById('optimizedPlatforms').innerHTML = '';
+            document.getElementById('statusMessage').innerHTML = '';
+            currentScenario = null;
+            optimizationResults = null;
+            showStatus('View reset successfully!', 'success');
+        }
+
+        // Load scenario automatically when page loads
+        window.onload = loadScenario;
+    </script>
+</body>
+</html>

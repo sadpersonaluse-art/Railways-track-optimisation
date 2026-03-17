@@ -1,0 +1,186 @@
+{
+  "trains": [
+    {
+      "train_id": 1,
+      "train_number": "12260",
+      "train_name": "New Delhi-Sealdah AC Duronto Express",
+      "train_type": "Express",
+      "scheduled_arrival": "15:30",
+      "scheduled_departure": "16:30",
+      "passenger_load": 800,
+      "priority": "Normal",
+      "original_platform": 1,
+      "current_eta": "15:30",
+      "status": "OnTime"
+    },
+    {
+      "train_id": 2,
+      "train_number": "12031",
+      "train_name": "Amritsar Shatabdi Express",
+      "train_type": "Express",
+      "scheduled_arrival": "15:45",
+      "scheduled_departure": "16:45",
+      "passenger_load": 800,
+      "priority": "Normal",
+      "original_platform": 4,
+      "current_eta": "15:45",
+      "status": "OnTime"
+    },
+    {
+      "train_id": 3,
+      "train_number": "12055",
+      "train_name": "Dehradun Jan Shatabdi Express",
+      "train_type": "Express",
+      "scheduled_arrival": "16:00",
+      "scheduled_departure": "17:00",
+      "passenger_load": 800,
+      "priority": "Normal",
+      "original_platform": 4,
+      "current_eta": "16:40",
+      "status": "Delayed"
+    },
+    {
+      "train_id": 4,
+      "train_number": "14212",
+      "train_name": "NewDelhi-Agra InterCity Express",
+      "train_type": "Special",
+      "scheduled_arrival": "16:15",
+      "scheduled_departure": "17:15",
+      "passenger_load": 1200,
+      "priority": "High",
+      "original_platform": 4,
+      "current_eta": "16:05",
+      "status": "Early"
+    },
+    {
+      "train_id": 5,
+      "train_number": "12402",
+      "train_name": "Magadh Express",
+      "train_type": "Special",
+      "scheduled_arrival": "16:15",
+      "scheduled_departure": "17:15",
+      "passenger_load": 147,
+      "priority": "High",
+      "original_platform": 6,
+      "current_eta": "15:55",
+      "status": "Early"
+    },
+    {
+      "train_id": 6,
+      "train_number": "12554",
+      "train_name": "Vaishali SF Express",
+      "train_type": "Express",
+      "scheduled_arrival": "16:30",
+      "scheduled_departure": "17:30",
+      "passenger_load": 147,
+      "priority": "Normal",
+      "original_platform": 2,
+      "current_eta": "16:30",
+      "status": "OnTime"
+    },
+    {
+      "train_id": 7,
+      "train_number": "14323",
+      "train_name": "New Delhi-Rohtak Express",
+      "train_type": "Special",
+      "scheduled_arrival": "17:00",
+      "scheduled_departure": "18:00",
+      "passenger_load": 1200,
+      "priority": "High",
+      "original_platform": 3,
+      "current_eta": "17:00",
+      "status": "OnTime"
+    },
+    {
+      "train_id": 8,
+      "train_number": "12454",
+      "train_name": "New Delhi-Ranchi Rajdhani Express",
+      "train_type": "Express",
+      "scheduled_arrival": "17:30",
+      "scheduled_departure": "18:30",
+      "passenger_load": 800,
+      "priority": "Normal",
+      "original_platform": 5,
+      "current_eta": "17:30",
+      "status": "OnTime"
+    }
+  ],
+  "platforms": [
+    {
+      "platform_id": 1,
+      "capacity": 1500,
+      "is_operational": true,
+      "proximity_to_concourse": "A",
+      "has_handicap_access": true,
+      "current_occupancy": 300
+    },
+    {
+      "platform_id": 2,
+      "capacity": 1200,
+      "is_operational": true,
+      "proximity_to_concourse": "A",
+      "has_handicap_access": false,
+      "current_occupancy": 200
+    },
+    {
+      "platform_id": 3,
+      "capacity": 1800,
+      "is_operational": true,
+      "proximity_to_concourse": "B",
+      "has_handicap_access": true,
+      "current_occupancy": 800
+    },
+    {
+      "platform_id": 4,
+      "capacity": 1600,
+      "is_operational": true,
+      "proximity_to_concourse": "B",
+      "has_handicap_access": false,
+      "current_occupancy": 1100
+    },
+    {
+      "platform_id": 5,
+      "capacity": 1400,
+      "is_operational": true,
+      "proximity_to_concourse": "B",
+      "has_handicap_access": true,
+      "current_occupancy": 600
+    },
+    {
+      "platform_id": 6,
+      "capacity": 1300,
+      "is_operational": true,
+      "proximity_to_concourse": "C",
+      "has_handicap_access": false,
+      "current_occupancy": 400
+    },
+    {
+      "platform_id": 7,
+      "capacity": 1100,
+      "is_operational": true,
+      "proximity_to_concourse": "C",
+      "has_handicap_access": true,
+      "current_occupancy": 100
+    },
+    {
+      "platform_id": 8,
+      "capacity": 1000,
+      "is_operational": true,
+      "proximity_to_concourse": "C",
+      "has_handicap_access": false,
+      "current_occupancy": 200
+    }
+  ],
+  "metadata": {
+    "scenario": "Diwali Rush at New Delhi Station",
+    "total_passengers": 5894,
+    "conflict_platforms": [
+      4
+    ],
+    "crowded_platforms": [
+      3,
+      4,
+      5
+    ]
+  }
+}

@@ -85,31 +85,13 @@ jobs:
       - name: Validate API Endpoints
         if: contains(github.event.inputs.audit_scope, 'all') || contains(github.event.inputs.audit_scope, 'api')
         run: |
-          # This is a placeholder. Actual validation might in volve
-          # starting the FastAPI app and sending requests to specific endpoints.
-          # Example: use a tool like httpie or requests to hit /docs or specific endpoints
           echo "Simulating API endpoint validation for FastAPI..."
-          # Start your FastAPI app in the background (e.g., using uvicorn)
-          # uvicorn main:app --host 0.0.0.0 --port 8000 &
-          # sleep 5 # Give server time to start
-          # http GET http://localhost:8000/docs # Example
-          # http GET http://localhost:8000/predict # Example with mock data
           echo "API endpoint validation simulation complete."
 
       - name: ML Pipeline & Model Validation
         if: contains(github.event.inputs.audit_scope, 'all') || contains(github.event.inputs.audit_scope, 'ml-pipeline')
         run: |
           echo "Validating ML pipeline and model..."
-          # This step would be highly specific to your project.
-          # It might involve:
-          # 1. Setting up mock data.
-          # 2. Running preprocessing scripts and comparing output.
-          # 3. Executing a training run with limited epochs.
-          # 4. Evaluating model metrics.
-          # 5. Testing inference workflow with sample input.
-          # 6. Checking model artifact handling.
-          # Example:
-          # python scripts/validate_ml_pipeline.py --data-path data/mock/
           echo "ML pipeline validation simulation complete."
 
       - name: Documentation Quality Check

@@ -86,7 +86,7 @@ jobs:
         if: contains(github.event.inputs.audit_scope, 'all') || contains(github.event.inputs.audit_scope, 'api')
         run: |
           # This is a placeholder. Actual validation might in volve
-# starting the FastAPI app and sending requests to specific endpoints.
+          # starting the FastAPI app and sending requests to specific endpoints.
           # Example: use a tool like httpie or requests to hit /docs or specific endpoints
           echo "Simulating API endpoint validation for FastAPI..."
           # Start your FastAPI app in the background (e.g., using uvicorn)
@@ -139,13 +139,10 @@ jobs:
           if [ -f .env.example ]; then echo ".env.example found."; else echo "WARNING: .env.example not found."; fi
           echo "Deployment readiness check simulated."
 
-      # Static Analysis Summary (aggregated)
       - name: Static Analysis Summary
         if: contains(github.event.inputs.audit_scope, 'all') || contains(github.event.inputs.audit_scope, 'static-analysis')
         run: |
           echo "Performing comprehensive static analysis..."
           # This step would aggregate results from linting, type checking, security scans, etc.
-          # Placeholder:
           echo "Static analysis summary placeholder."
 
-      # Note: You can add a final reporting step here to generate and upload a structured report.

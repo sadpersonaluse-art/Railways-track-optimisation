@@ -145,4 +145,4 @@ jobs:
           echo "Performing comprehensive static analysis..."
           # This step would aggregate results from linting, type checking, security scans, etc.
           echo "Static analysis summary placeholder."
-
+          # Note: Add any final reporting step here if you want to generate a structured report.

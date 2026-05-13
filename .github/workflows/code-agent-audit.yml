@@ -1,123 +1,45 @@
 name: Coding Agent Project Audit
 
 on:
-workflow_dispatch: # Allows manual triggering
-inputs:
-project_repo:
-description: 'GitHub repository URL to audit (e.g., https://github.com/user/repo)'
-required: true
-type: string
-branch:
-description: 'Branch to audit (default: main)'
-required: false
-default: 'main'
-type: string
-audit_scope:
-description: 'Specific aspects to audit (e.g., "all", "ml-pipeline", "tests", "ci-cd")'
-required: false
-default: 'all'
-type: string
+  push:
+    branches:
+      - main
+
+  pull_request:
+    branches:
+      - main
 
 jobs:
-audit_project:
-runs-on: ubuntu-latest
-# If it's a private repo, you'd need to configure secrets/authentication here.
-# For this template, we assume access is already configured or it's a public repo.
-steps:
-- name: Checkout code
-uses: actions/checkout@v4
-with:
-repository: ${{ inputs.project_repo }}
-ref: ${{ inputs.branch }}
-# If the repo is private, you would need a token:
-# token: ${{ secrets.GITHUB_TOKEN }}
+  audit_project:
+    runs-on: ubuntu-latest
 
-- name: Set up Python
-uses: actions/setup-python@v5
-with:
-python-version: '3.x' # Adjust as needed
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-- name: Cache Python dependencies
-uses: actions/cache@v4
-with:
-path: ~/.cache/pip
-key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt', '**/requirements-dev.txt') }} # Adjust for your requirement files
-restore-keys: |
-${{ runner.os }}-pip-
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
 
-- name: Install main dependencies
-run: |
-python -m pip install --upgrade pip
-if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-# Add more dependency files as needed, e.g., for ML/DL
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
 
-- name: Install development/test dependencies
-run: |
-if [ -f requirements-dev.txt ]; then pip install -r requirements-dev.txt; fi
-# Install ML/DL specific dependencies if separate requirements exist
-# e.g., pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
+          if [ -f requirements.txt ]; then
+            pip install -r requirements.txt
+          fi
 
-- name: Linting and type checking
-if: contains(github.event.inputs.audit_scope, 'all') || contains(github.event.inputs.audit_scope, 'linting')
-run: |
-# Example: Using Flake8 for linting and MyPy for type checking
-# Ensure these tools are installed via requirements-dev.txt
-flake8 . --count --select E,F,W,C --exclude .git,__pycache__,docs/,venv/
-mypy . --ignore-missing-imports --install-types --non-interactive
+          if [ -f requirements-dev.txt ]; then
+            pip install -r requirements-dev.txt
+          fi
 
-- name: Dependency and Security Checks
-if: contains(github.event.inputs.audit_scope, 'all') || contains(github.event.inputs.audit_scope, 'security')
-run: |
-# Example: Using safety for dependency vulnerability scanning
-# Ensure safety is installed. It can scan installed packages or a requirements.txt
-safety check -r requirements.txt --full-report
-# Consider tools like Bandit for security in Python code
-# bandit -r .
+      - name: Run linting
+        run: |
+          pip install flake8
+          flake8 .
 
-- name: Run Unit and Integration Tests
-if: contains(github.event.inputs.audit_scope, 'all') || contains(github.event.inputs.audit_scope, 'tests')
-run: |
-# Assuming tests are in a 'tests/' directory and pytest is used
-# Adjust command based on your project's test runner and structure
-pytest tests/ --junitxml=results.xml
-
-- name: Validate API Endpoints
-if: contains(github.event.inputs.audit_scope, 'all') || contains(github.event.inputs.audit_scope, 'api')
-run: |
-# This is a placeholder. Actual validation might involve
-# starting the FastAPI app and sending requests to specific endpoints.
-# Example: use a tool like httpie or requests to hit /docs or specific endpoints
-echo "Simulating API endpoint validation for FastAPI..."
-# Start your FastAPI app in the background (e.g., using uvicorn)
-# uvicorn main:app --host 0.0.0.0 --port 8000 &
-# sleep 5 # Give server time to start 
-# http GET http://localhost:8000/docs # Example
-# http GET http://localhost:8000/predict # Example with mock data
-
-- name: ML Pipeline & Model Validation
-if: contains(github.event.inputs.audit_scope, 'all') || contains(github.event.inputs.audit_scope, 'ml-pipeline')
-run: |
-echo "Validating ML pipeline and model..."
-# This step would be highly specific to your project.
-# It might involve:
-# 1. Setting up mock data.
-# 2. Running preprocessing scripts and comparing output.
-# 3. Executing a training run with limited epochs.
-# 4. Evaluating model metrics.
-# 5. Testing inference workflow with sample input.
-# 6. Checking model artifact handling.
-# Example:
-# python scripts/validate_ml_pipeline.py --data-path data/mock/
-
-- name: Documentation Quality Check
-if: contains(github.event.inputs.audit_scope, 'all') || contains(github.event.inputs.audit_scope, 'documentation')
-run: |
-echo "Checking documentation quality (README, docstrings)..."
-# Automated checks for README completeness and docstring coverage might be complex.
-# This can be a manual review step or involve scripts that check for README existence,
-# minimum content, and docstring presence in key functions.
-if [ ! -f README.md ]; then echo "ERROR: README.md not found."; exit 1; fi
-# Add checks for docstring coverage if you have a tool for it.
-
-- name: Deployment Readiness Check
-if: contains(github.event.inputs
+      - name: Run tests
+        run: |
+          pip install pytest
+          pytest

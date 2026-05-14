@@ -1,0 +1,10 @@
+fastapi==0.111.0
+uvicorn[standard]==0.29.0
+pydantic==2.7.4
+pandas==2.2.2
+scikit-learn==1.5.0
+joblib==1.4.2
+SQLAlchemy==2.0.30
+python-json-logger==2.0.7
+python-dotenv==1.0.1
+python-multipart==0.0.9

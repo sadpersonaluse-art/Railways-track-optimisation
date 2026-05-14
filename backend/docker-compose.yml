@@ -1,0 +1,18 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    container_name: railway_backend
+
+    ports:
+      - "8000:8000"
+
+    environment:
+      DATABASE_URL: sqlite:///./railway_data.db
+      DEBUG: "true"
+
+    volumes:
+      - ./src:/app/src
+      - ./data:/app/data
